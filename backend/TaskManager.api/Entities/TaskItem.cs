@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,14 +17,25 @@ namespace TaskManager.api.Entities
 
         */
         public int Id {get; set;}
-        public string Tittle {get; set;} = string.Empty;
+
+        [Required]
+        [MaxLength(150)]
+        public string Title {get; set;} = string.Empty;
+
+        [Required]
+        [MaxLength(255)]
         public string? Description {get; set;}
-        public bool IsCompleted {get; set;}
-        public bool IsActive {get; set;}
+
+        [Required]
+        public bool IsCompleted {get; set;} = false;
+
+        //Dejar para cuando se habiliten audit_entities y soft delete
+        //public bool IsActive {get; set;}
         public DateTime? Start {get; set;}
         public DateTime? End {get; set;}
-        
+
         //Fk
+        [Required]
         public int UserId {get; set;}
 
         //Navigation Properties
