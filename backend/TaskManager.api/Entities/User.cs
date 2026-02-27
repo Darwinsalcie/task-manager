@@ -13,8 +13,9 @@ namespace TaskManager.api.Entities
         public string PasswordHash {get; set;} = string.Empty;
         public Role UserRole {get; set;}
 
-        //Agregar las navigation properties de la lista de tareas
-        // Ver opciones IColletion, List, etc
+        //Navigation Properties
+        public ICollection<TaskItem> TaskItems {get; set;} = new List<TaskItem>();
+        
     }
 
     public enum Role : byte
