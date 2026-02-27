@@ -29,6 +29,7 @@ namespace TaskManager.api.Entities
         //Navigation Properties
         //null + ! "operador null-fogiving" - indica al compilador  que en tiempo
         // de ejecución user no será nulo.
+        //Para usar esto debemos cargar la navegación de forma explícita, es decir, no usar lazy loading.
         public User User {get; set;} = null!;
     }
 }
