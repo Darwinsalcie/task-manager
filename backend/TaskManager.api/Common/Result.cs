@@ -56,6 +56,8 @@
             Value = value;
         }
 
+        // Es mejor usar empty que usar null o default
+        //es po semantica, ya que al iterar sobre null o default da error
         public static Result<T> Succes(T value)
             => new Result<T>(true, value, Enumerable.Empty<string>());
         
@@ -66,9 +68,15 @@
         *bool => default = false
          */
         //No queremos pasar nada, pero al ser generico usamos default.
-        public static Result<T> Failure(IEnumerable<string> errors)
+
+        //***New*** is a member modifier like: override, virtual, abstract...
+        //Los member modifiers dan instrucciones al compilador sobre como debe comporta'rse
+        //un miembro en relación a la jerarquía de herencia.
+        //new tiene que ver con el ocultamiento, le dice que coexistas junto con el failure
+        //del padre aunque tengan el mismo nombre.
+        public new static Result<T> Failure(IEnumerable<string> errors)
             => new Result<T>(false, default, errors);
-        public static Result<T> Failure(string error)
+        public new static Result<T> Failure(string error)
             => new Result<T>(false, default, new[] { error });
     }
 }

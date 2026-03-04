@@ -1,9 +1,11 @@
-﻿namespace TaskManager.api.Data.Repository
+﻿using TaskManager.api.Common;
+
+namespace TaskManager.api.Data.Repository
 {
     public interface IGenericRepository<T> where T: class
     {
         /// <summary>
-        /// Devuelve la colección como <see cref="IEnumerable{T}"/> para exponer 
+        /// Devuelve la colección como <see cref="Result{IEnumerable{T}}"/> para exponer 
         /// únicamente la abstracción mínima necesaria para la iteración. 
         /// Esto evita filtrar detalles de implementación (como List o IQueryable), 
         /// reduce el acoplamiento entre capas, mejora la capacidad de prueba 
@@ -12,9 +14,9 @@
         /// no se romperán mis capas superiores.
         /// </summary>
         /// <returns>
-        /// Una colección de entidades como <see cref="IEnumerable{T}"/>.
+        /// Una colección de entidades como <see cref="Result{IEnumerable{T}}"/>.
         /// </returns>
-        Task<IEnumerable<T>> Get ();
+        Task<Result<IEnumerable<T>>> Get ();
         Task<T?> GetById (int id);
         Task<T> AddAsync(T entity);
         //Solo es marcar el cambio en el change tracker, por lo que no es necesario 
