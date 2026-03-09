@@ -17,12 +17,17 @@ namespace TaskManager.api.Data.Repository
         /// Una colección de entidades como <see cref="Result{IEnumerable{T}}"/>.
         /// </returns>
         Task<Result<IEnumerable<T>>> Get ();
-        Task<T?> GetById (int id);
-        Task<T> AddAsync(T entity);
-        //Solo es marcar el cambio en el change tracker, por lo que no es necesario 
-        // retornar nada, ya que el cambio se guardará cuando se llame a SaveChangesAsync.
-        Task<bool> UpdateAsync (T entity);
-        Task<bool> DeleteAsync (T entity);
+        Task<Result<T?>> GetById (int id);
+
+        /// <summary>
+        /// Se retorna la entidad porque el front no sabe cual es el id que se generó en la db
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task<Result<T>> AddAsync(T entity);
+        
+        Task<Result> UpdateAsync (T entity);
+        Task<Result> DeleteAsync (T entity);
 
         //Acá usamos este saveChanges Async para no exponer el contexto que es una capa anterior en la capa de servicios,
         //así si queremos hacer varias operaciones antes de guardar los cambios, lo podemos hacer sin necesidad de exponer el contexto.

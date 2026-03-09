@@ -13,43 +13,88 @@ namespace TaskManager.api.Data.Repository
         }
         public async Task<Result<IEnumerable<T>>> Get() 
         {
-            var entities = await _dbContext.Set<T>().ToListAsync();
+            try
+            {
+                var entities = await _dbContext.Set<T>().ToListAsync();
 
-            // Retorrna List y hacemos Upcasting para mantener la lista desacoplada
-            // Estoy transportando los datos en un objeto List con todo lo que conlleva,
-            //pero al usar la interfaz tengo el seguro del contrato que me impide exponer metodos
-            //Que me hagan ese objeto incompatible con otros objetos que implementen IEnumerble.
-            var resultEntities = Result<IEnumerable<T>>.Succes(entities);
-            return resultEntities;
+                // Retorrna List y hacemos Upcasting para mantener la lista desacoplada
+                // Estoy transportando los datos en un objeto List con todo lo que conlleva,
+                //pero al usar la interfaz tengo el seguro del contrato que me impide exponer metodos
+                //Que me hagan ese objeto incompatible con otros objetos que implementen IEnumerble.
+                var resultEntities = Result<IEnumerable<T>>.Succes(entities);
+                return resultEntities;
+            }
+            catch (Exception ex) 
+            {
+                return Result<IEnumerable<T>>.Failure(ex.Message);
+            }
+
         }
-        public async Task<T?> GetById(int id)
-            => await _dbContext.Set<T>().FindAsync(id);
-        public async Task<T> AddAsync(T entity)
+        public async Task<Result<T?>> GetById(int id)
+        {
+            try
+            {
+                //Nul es un resultado valido de la operacíón por lo que se maneja
+                //en la capa de servicio mandandolo en la lista de errores de validación
+                //como un failure.
+                var entity = await _dbContext.Set<T>().FindAsync(id);
+                var resultEntity = Result<T?>.Succes(entity);
+                return resultEntity;
+            }
+
+            catch (Exception ex) 
+            {
+                return Result<T?>.Failure(ex.Message);
+            }
+        }
+          
+        public async Task<Result<T>> AddAsync(T entity)
         {
             //El AddAsync solo es necesario en casos como cuando los generadores de Id
             //tienen que consultar la db
-            _dbContext.Set<T>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<bool> UpdateAsync(T entity)
-        {
-            try {
 
-                _dbContext.Update(entity);
+            try
+            {
+                _dbContext.Set<T>().Add(entity);
                 await _dbContext.SaveChangesAsync();
-                return true;
-            
+
+                return Result<T>.Succes(entity);
             }
-            catch (Exception e) {
-                return false;
+            catch(Exception ex)
+            {
+                return Result<T>.Failure(ex.Message);
             }
+
         }
-        public async Task<bool> DeleteAsync(T entity)
+        public async Task<Result> UpdateAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
-            var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
+            try
+            {
+                _dbContext.Set<T>().Update(entity);
+                await _dbContext.SaveChangesAsync();
+
+                return Result.Success();
+            }
+            catch(Exception ex)
+            {
+                return Result.Failure(ex.Message);
+            }
+
+        }
+        public async Task<Result> DeleteAsync(T entity)
+        {
+            try
+            {
+                _dbContext.Set<T>().Remove(entity);
+                await _dbContext.SaveChangesAsync();
+
+                return Result.Success();
+
+            }
+            catch(Exception ex)
+            {
+                return Result.Failure(ex.Message);
+            }
         }
 
 

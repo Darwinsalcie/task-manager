@@ -1,6 +1,12 @@
 ﻿namespace TaskManager.api.Common
 {
     //Si la operación no retorna algo usamos este
+    /// <summary>
+    /// El result pattern nos permite enviar siempre el objeto sin necesidad
+    /// de interrumpir el flujo del programa con excepciones, construimos
+    /// objetos con diferentes datos dependiendo si fue exitoso o no, pero
+    /// a ojos del programa siempre se envía algo.
+    /// </summary>
     public class Result
     {
         public bool IsSucces { get; }
