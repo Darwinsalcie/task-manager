@@ -4,7 +4,7 @@ using TaskManager.api.Entities;
 
 namespace TaskManager.api.Dtos.UserDto
 {
-    public class UserResposeDto
+    public class UserResponseDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
