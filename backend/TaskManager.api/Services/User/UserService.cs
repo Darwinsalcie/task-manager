@@ -16,8 +16,19 @@ namespace TaskManager.api.Service.User_service
         //****************Manejar errores************
         public async Task<Result<IEnumerable<UserResponseDto>>> GetUsers()
         {
+            //En un get como algunos errores son bloqueantes lo mejor es no seguir ejecutando si ya falló
+            //Por eso no acumulamos los errores.
             var userResult = await _userRepository.Get();
 
+            if (userResult.IsFailure)
+                return Result<IEnumerable<UserResponseDto>>.Failure(userResult.Errors);
+
+
+            //Le dice al compilador si el valor es null no intenta acceder a el y evita lanzar un excepción
+            if (!userResult.Value?.Any() ?? true)
+                return Result<IEnumerable<UserResponseDto>>.Failure("No hay ningun usuario");
+
+            
             var usersList = new List<UserResponseDto>();
 
             foreach (var user in userResult.Value)
@@ -26,6 +37,7 @@ namespace TaskManager.api.Service.User_service
             }
 
             return Result<IEnumerable<UserResponseDto>>.Succes(usersList);
+
         }
         public Task<Result<UserResponseDto>> CreateUser(UserCreateDto userCreatedto)
         {
