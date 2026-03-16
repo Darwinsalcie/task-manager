@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TaskManager.api.Common;
 
 namespace TaskManager.api.Data.Repository
@@ -102,6 +103,10 @@ namespace TaskManager.api.Data.Repository
             }
         }
 
+        public async Task<Result<bool>> ExistsAsync(Expression<Func<T, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

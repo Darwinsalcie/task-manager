@@ -1,4 +1,5 @@
-﻿using TaskManager.api.Common;
+﻿using System.Linq.Expressions;
+using TaskManager.api.Common;
 
 namespace TaskManager.api.Data.Repository
 {
@@ -32,6 +33,9 @@ namespace TaskManager.api.Data.Repository
         //Acá usamos este saveChanges Async para no exponer el contexto que es una capa anterior en la capa de servicios,
         //así si queremos hacer varias operaciones antes de guardar los cambios, lo podemos hacer sin necesidad de exponer el contexto.
         //Task SaveChangesAsync ();
+
+        Task<Result<bool>> ExistsAsync(Expression<Func<T, bool>> predicate);
+
 
     }
 }
