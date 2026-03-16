@@ -28,9 +28,10 @@ namespace TaskManager.api.Common
                 UserRole = dto.UserRole
             };
 
-        public static User Map(this UserUpdateDto dto) =>
+        public static User Map(this UserUpdateDto dto, int userId) =>
             new()
             {
+                Id = userId,
                 Name = dto.Name,
                 Email = dto.Email,
                 PasswordHash = dto.Password,

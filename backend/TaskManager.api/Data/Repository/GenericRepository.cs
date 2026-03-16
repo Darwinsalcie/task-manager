@@ -21,7 +21,7 @@ namespace TaskManager.api.Data.Repository
                 // Estoy transportando los datos en un objeto List con todo lo que conlleva,
                 //pero al usar la interfaz tengo el seguro del contrato que me impide exponer metodos
                 //Que me hagan ese objeto incompatible con otros objetos que implementen IEnumerble.
-                var resultEntities = Result<IEnumerable<T>>.Succes(entities);
+                var resultEntities = Result<IEnumerable<T>>.Success(entities);
                 return resultEntities;
             }
             catch (Exception ex) 
@@ -38,7 +38,7 @@ namespace TaskManager.api.Data.Repository
                 //en la capa de servicio mandandolo en la lista de errores de validación
                 //como un failure.
                 var entity = await _dbContext.Set<T>().FindAsync(id);
-                var resultEntity = Result<T?>.Succes(entity);
+                var resultEntity = Result<T?>.Success(entity);
                 return resultEntity;
             }
 
@@ -47,7 +47,9 @@ namespace TaskManager.api.Data.Repository
                 return Result<T?>.Failure(ex.Message);
             }
         }
-          
+
+
+        //*******Verificar Name and Email unicos
         public async Task<Result<T>> AddAsync(T entity)
         {
             //El AddAsync solo es necesario en casos como cuando los generadores de Id
@@ -58,7 +60,7 @@ namespace TaskManager.api.Data.Repository
                 _dbContext.Set<T>().Add(entity);
                 await _dbContext.SaveChangesAsync();
 
-                return Result<T>.Succes(entity);
+                return Result<T>.Success(entity);
             }
             catch(Exception ex)
             {
@@ -66,6 +68,9 @@ namespace TaskManager.api.Data.Repository
             }
 
         }
+
+
+        //*******Verificar Name and Email unicos
         public async Task<Result> UpdateAsync(T entity)
         {
             try

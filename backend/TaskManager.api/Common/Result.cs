@@ -63,8 +63,8 @@
         }
 
         // Es mejor usar empty que usar null o default
-        //es po semantica, ya que al iterar sobre null o default da error
-        public static Result<T> Succes(T value)
+        //es por semantica, ya que al iterar sobre null o default da error
+        public static Result<T> Success(T value)
             => new Result<T>(true, value, Enumerable.Empty<string>());
         
         /*Default behavior.

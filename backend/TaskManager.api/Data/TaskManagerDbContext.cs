@@ -23,6 +23,13 @@ namespace TaskManager.api.Data
         {
             //Primero, llamamos al método base para que se ejecute la logica del metodo de la clase base
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Name).IsUnique();
+            
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email).IsUnique();
+
         }
     }
 }
