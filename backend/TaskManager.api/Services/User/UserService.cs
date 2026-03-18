@@ -49,6 +49,11 @@ namespace TaskManager.api.Service.User_service
             if (userCreatedto is null)
                 return Result<UserResponseDto>.Failure("La entidad que se intenta crear es nula");
 
+            var userValidation = await _userRepository.ExistsAsync(u => u.Name == userCreatedto.Name || u.Email == userCreatedto.Email);
+
+            if (!userValidation.Value)
+                return Result<UserResponseDto>.Failure("El nombre o email ingresados ya existen");
+
             var userCreateResult = await _userRepository.AddAsync(userCreatedto.Map());
 
             if(userCreateResult.IsFailure)
@@ -63,6 +68,11 @@ namespace TaskManager.api.Service.User_service
         {
             if (userUpdateDto is null)
                 return Result.Failure("El dto es nulo");
+
+            var userValidation = await _userRepository.ExistsAsync(u => u.Name == userUpdateDto.Name || u.Email == userUpdateDto.Email);
+
+            if (!userValidation.Value)
+                return Result<UserResponseDto>.Failure("El nombre o email ingresados ya existen");
 
             if (userId <= 0)
                 return Result.Failure("El id debe ser mayor o igual a 0");

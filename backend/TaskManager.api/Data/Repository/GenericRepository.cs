@@ -103,9 +103,25 @@ namespace TaskManager.api.Data.Repository
             }
         }
 
+        //AnyAsync en vez de retornar la entidad como en una busqueda retnorna un bool si se
+        //Cumple la condición
         public async Task<Result<bool>> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var validationResult = await _dbContext.Set<T>().AnyAsync(predicate);
+
+                return Result<bool>.Success(validationResult);
+
+            }
+            catch (Exception ex)
+            {
+                //Estamos retornando un result, el result tiene un T value.
+                //Al usuar default en este metodo constructor
+                //y tener un failure ese value se hace bool automaticamente
+                return Result<bool>.Failure($"Error en el metodo de validación: {ex.Message}");
+            }
+
         }
 
     }
