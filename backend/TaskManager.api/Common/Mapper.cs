@@ -38,6 +38,15 @@ namespace TaskManager.api.Common
                 UserRole = dto.UserRole
             };
 
+        public static void MapTo(this UserUpdateDto dto, User entity)
+        {
+            entity.Name = dto.Name;
+            entity.Email = dto.Email;
+            entity.PasswordHash = dto.Password;
+            entity.UserRole = dto.UserRole;
+        }
+
+
         //TaskIem Mapper
         public static TaskItemResponseDto Map(this TaskItem dto) =>
         new()
@@ -62,15 +71,24 @@ namespace TaskManager.api.Common
             UserId = dto.UserId
         };
 
-        public static TaskItem Map(this TaskItemUpdateDto dto) =>
+        public static TaskItem Map(this TaskItemUpdateDto dto, int taskItemId) =>
         new()
         {
-            Title = dto.Title,
-            Description = dto.Description,
-            IsCompleted = dto.IsCompleted,
-            Start = dto.Start,
-            End = dto.End,
+                Id = taskItemId,
+                Title = dto.Title,
+                Description = dto.Description,
+                IsCompleted = dto.IsCompleted,
+                Start = dto.Start,
+                End = dto.End,
         };
 
+        public static void MapTo(this TaskItemUpdateDto dto, TaskItem entity)
+        {
+            entity.Title = dto.Title;
+            entity.Description = dto.Description;
+            entity.IsCompleted = dto.IsCompleted;
+            entity.Start = dto.Start;
+            entity.End = dto.End;
+        }
     }
 }

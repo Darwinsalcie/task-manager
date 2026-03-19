@@ -51,7 +51,7 @@ namespace TaskManager.api.Service.User_service
 
             var userValidation = await _userRepository.ExistsAsync(u => u.Name == userCreatedto.Name || u.Email == userCreatedto.Email);
 
-            if (!userValidation.Value)
+            if (userValidation.Value)
                 return Result<UserResponseDto>.Failure("El nombre o email ingresados ya existen");
 
             var userCreateResult = await _userRepository.AddAsync(userCreatedto.Map());
@@ -69,29 +69,38 @@ namespace TaskManager.api.Service.User_service
             if (userUpdateDto is null)
                 return Result.Failure("El dto es nulo");
 
-            var userValidation = await _userRepository.ExistsAsync(u => u.Name == userUpdateDto.Name || u.Email == userUpdateDto.Email);
-
-            if (!userValidation.Value)
-                return Result<UserResponseDto>.Failure("El nombre o email ingresados ya existen");
-
             if (userId <= 0)
                 return Result.Failure("El id debe ser mayor o igual a 0");
 
-            var userbyIdResult = await _userRepository.GetById(userId);
-            
-            if (userbyIdResult.IsFailure)
-                return Result.Failure($"Ha habido un error al buscar el usuario: {userbyIdResult.Errors}");
+            var userByIdResult = await _userRepository.GetById(userId);
 
-            if (userbyIdResult.Value is null)
+            if (userByIdResult.IsFailure)
+                return Result.Failure($"Ha habido un error al buscar el usuario: {userByIdResult.Errors}");
+
+            if (userByIdResult.Value is null)
                 return Result.Failure("El usuario no existe");
 
-            var user = userUpdateDto.Map(userId);
+            var existingUser = userByIdResult.Value;
 
-            var userUpdateResult = await _userRepository.UpdateAsync(user);
+            //Validación de duplicados (mejorada)
+            var userValidation = await _userRepository.ExistsAsync(u =>
+                (u.Name == userUpdateDto.Name || u.Email == userUpdateDto.Email)
+                && u.Id != userId); // 👈 IMPORTANTE
+
+            if (userValidation.IsFailure)
+                return Result.Failure(userValidation.Errors);
+
+            if (userValidation.Value)
+                return Result.Failure("El nombre o email ingresados ya existen");
+
+            //Mapear SOBRE la entidad existente
+            userUpdateDto.MapTo(existingUser);
+
+            var userUpdateResult = await _userRepository.UpdateAsync(existingUser);
 
             if (userUpdateResult.IsFailure)
-                return Result.Failure($"Error al actualizar al entidad: {userUpdateResult.Errors}");
-            
+                return Result.Failure($"Error al actualizar la entidad: {userUpdateResult.Errors}");
+
             return Result.Success();
         }
 
