@@ -107,6 +107,7 @@ namespace TaskManager.api.Service.TaskItem_service
             if (taskItemId <= 0)
                 return Result.Failure("El id debe ser mayor a 0");
 
+            //Acá ya se trackea la entidad
             var taskResult = await _taskItemRepository.GetById(taskItemId);
 
             if (taskResult.IsFailure)
@@ -120,7 +121,7 @@ namespace TaskManager.api.Service.TaskItem_service
             // MAPEAR SOBRE LA MISMA INSTANCIA 
             taskItemUpdateDto.MapTo(existingTask);
 
-            // ❗ No necesitas Update() realmente si ya está trackeado,
+            //No necesito Update() realmente si ya está trackeado,
             // pero lo dejamos por consistencia con tu repo
             var updateResult = await _taskItemRepository.UpdateAsync(existingTask);
 

@@ -76,7 +76,8 @@ namespace TaskManager.api.Data.Repository
         {
             try
             {
-                _dbContext.Set<T>().Update(entity);
+                //La entidad ya se trackea con el getbyId
+                //_dbContext.Set<T>().Update(entity);
                 await _dbContext.SaveChangesAsync();
 
                 return Result.Success();
